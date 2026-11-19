@@ -3,6 +3,8 @@ name: Release
 on:
   push:
     tags: ['v*']
+  release:
+    types: [published]
 
 permissions:
   contents: write
@@ -21,7 +23,9 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: build/nexa-efris.zip
+          tag_name: ${{ github.event.release.tag_name || github.ref_name }}
           generate_release_notes: true
+          append_body: true
           body: |
             Install: download **nexa-efris.zip** below, then in WordPress go to Plugins → Add New → Upload Plugin.
 
