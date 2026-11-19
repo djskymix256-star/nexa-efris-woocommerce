@@ -1,0 +1,28 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build installable plugin zip
+        run: |
+          mkdir -p build/nexa-efris
+          rsync -a --exclude-from=.distignore ./ build/nexa-efris/
+          cd build && zip -r nexa-efris.zip nexa-efris
+      - name: Publish GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: build/nexa-efris.zip
+          generate_release_notes: true
+          body: |
+            Install: download **nexa-efris.zip** below, then in WordPress go to Plugins → Add New → Upload Plugin.
+
+            ⚠️ Beta: test on the EFRIS test environment and complete UAT with URA before using it in production.
